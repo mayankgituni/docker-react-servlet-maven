@@ -19,4 +19,4 @@ jobs:
           email: ${{ secrets.HEROKU_USERNAME }}
           api_key: ${{ secrets.HEROKU_PASSWORD }}
           app_name: 'mayankdemo'
-          dockerfile_path: './Dockerfile'
+          dockerfile_path: './'
