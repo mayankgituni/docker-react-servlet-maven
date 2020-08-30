@@ -24,3 +24,7 @@ jobs:
         heroku war:deploy "./target/reactServlet.war" --app egg-zam-app
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    - name: Heroku Awake
+      uses: mikeesto/heroku-awake@1.0.0
+      with:
+        URL: https://egg-zam-app.herokuapp.com
