@@ -20,7 +20,6 @@ jobs:
         mvn test
         mvn verify
         mvn -B package --file pom.xml
-        heroku login
         heroku plugins:install java
         heroku war:deploy "./target/reactServlet.war" --app egg-zam-app
       env:
