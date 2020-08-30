@@ -11,9 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: mtsmachado8/heroku-deploy@v2.0.3
-        with:
-          api_key: ${{secrets.HEROKU_PASSWORD}}
-          app_name: "testingapp009"
-          email: ${{ secrets.HEROKU_USERNAME }}
-          dockerfile_path: './'
+      - name: push to heroku
+        env:
+          HEROKU_REGISTRY_URL: registry.heroku.com
+          HEROKU_TOKEN : ${{ secrets.HEROKU_PASSWORD }}
+        run : |
+          docker login --username=_ --password $HEROKU_TOKEN $HEROKU_REGISTRY_URL
+          export HEROKU_API_KEY=$HEROKU_TOKEN
+          heroku container:login
+          heroku container:push web --app testingapp009
+          heroku container:release web --app testingapp009
+          heroku ps:scale web=1 --app testingapp009
