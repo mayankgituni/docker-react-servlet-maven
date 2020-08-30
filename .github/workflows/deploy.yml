@@ -17,9 +17,7 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: |
-        mvn test
         mvn verify
-        mvn -B package --file pom.xml
     - name: Deploy to Heroku
       run: |
         heroku buildpacks:clear --app egg-zam-app
