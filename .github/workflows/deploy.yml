@@ -20,7 +20,6 @@ jobs:
         mvn verify
     - name: Deploy to Heroku
       run: |
-        heroku buildpacks:clear --app egg-zam-app
         heroku plugins:install java
         heroku war:deploy "./target/reactServlet.war" --app egg-zam-app
       env:
