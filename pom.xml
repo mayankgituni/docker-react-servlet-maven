@@ -37,7 +37,6 @@
 
   <build>
     <finalName>reactServlet</finalName>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
@@ -56,9 +55,52 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
         </plugin>
+
         <plugin>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>3.2.2</version>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.0.0</version>
+          <executions>
+            <execution>
+              <id>install-dependencies</id>
+              <phase>initialize</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <executable>yarn</executable>
+                <workingDirectory>${basedir}/src/main/client</workingDirectory>
+              </configuration>
+            </execution>
+            <execution>
+              <id>build-client</id>
+              <phase>compile</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <executable>yarn</executable>
+                <commandlineArgs>build</commandlineArgs>
+                <workingDirectory>${basedir}/src/main/client</workingDirectory>
+              </configuration>
+            </execution>
+            <execution>
+              <id>test-client</id>
+              <phase>test</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <executable>yarn</executable>
+                <commandlineArgs>test</commandlineArgs>
+                <workingDirectory>${basedir}/src/main/client</workingDirectory>
+                <environmentVariables>
+                  <CI>true</CI>
+                </environmentVariables>
+                <skip>${skipTests}</skip>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
@@ -99,7 +141,16 @@
                 </dependency>
             </dependencies>
         </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.3.1</version>
+          <configuration>
+            <webResources>
+              <resource>
+                <directory>src/main/client/build</directory>
+              </resource> </webResources>
+          </configuration>
+        </plugin>
       </plugins>
-    </pluginManagement>
   </build>
 </project>

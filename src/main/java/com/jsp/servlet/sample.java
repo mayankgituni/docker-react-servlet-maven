@@ -16,6 +16,8 @@ public class sample extends HttpServlet {
         request.setAttribute("username", request.getParameter("username"));
         request.setAttribute("password", request.getParameter("password"));
 
+        System.out.println(request.getParameter("username"));
+
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("welcome.jsp");
 
         requestDispatcher.forward(request, response);
