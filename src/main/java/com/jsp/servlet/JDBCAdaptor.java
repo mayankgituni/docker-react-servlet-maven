@@ -1,5 +1,7 @@
 package com.jsp.servlet;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,30 @@ import java.util.List;
  */
 public class JDBCAdaptor {
     private static JDBCAdaptor jdbcAdaptor = null;
-    private final String connectionUrl = System.getenv("DATABASE_URL");
+    private final String production = System.getenv("PRODUCTION");
+
+    private String getConnectionUrl() {
+        String connectionUrl = System.getenv("DATABASE_URL");
+
+        if((production != null) && production.equals("TRUE")) {
+            URI dbUri = null;
+            try {
+                dbUri = new URI(System.getenv("DATABASE_URL"));
+                String username = dbUri.getUserInfo().split(":")[0];
+                String password = dbUri.getUserInfo().split(":")[1];
+                connectionUrl = "jdbc:postgresql://" +
+                                    dbUri.getHost() + ":" +
+                                    dbUri.getPort() +
+                                    dbUri.getPath() +
+                                    "?user=" + username +
+                                    "&password=" + password;
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return connectionUrl;
+    }
 
     /**
      * Get the instance of the JDBC adaptor.
@@ -29,7 +54,7 @@ public class JDBCAdaptor {
     public void checkConnection() {
         // Get the connection
         try (Connection connection = DriverManager
-                .getConnection(connectionUrl)
+                .getConnection(getConnectionUrl())
         ) {
             if (connection != null) {
                 System.out.println("Connected to the database!");
@@ -50,7 +75,7 @@ public class JDBCAdaptor {
     public void createTable(String tableCommand, String attributes, boolean dropTable) {
         // Get the connection
         try (Connection connection = DriverManager
-                .getConnection(connectionUrl);
+                .getConnection(getConnectionUrl());
              Statement statement = connection.createStatement()
         ) {
             if (connection != null) {
@@ -82,7 +107,7 @@ public class JDBCAdaptor {
     public void updateTable(String query) {
         // Get the connection
         try (Connection connection = DriverManager
-                .getConnection(connectionUrl);
+                .getConnection(getConnectionUrl());
              Statement statement = connection.createStatement()
         ) {
             if (connection != null) {
@@ -111,7 +136,7 @@ public class JDBCAdaptor {
         List<List<String>> resultList = new ArrayList<>();
 
         try (Connection connection = DriverManager
-                .getConnection(connectionUrl);
+                .getConnection(getConnectionUrl());
                 Statement statement = connection.createStatement()
         ) {
             ResultSet resultSet = statement.executeQuery(query);
