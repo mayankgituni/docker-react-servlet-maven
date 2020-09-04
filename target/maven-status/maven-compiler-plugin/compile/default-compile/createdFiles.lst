@@ -1,1 +1,5 @@
+com/jsp/servlet/StudentApi.class
+com/jsp/servlet/Student.class
 com/jsp/servlet/sample.class
+com/jsp/servlet/JDBCAdaptor.class
+com/jsp/servlet/JsonConverter.class
